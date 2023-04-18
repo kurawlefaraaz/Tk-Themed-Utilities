@@ -1,0 +1,64 @@
+from tkinter import ttk
+import tkinter as tk
+class DropdownButton(tk.Button, ttk.Button):
+    def __init__(self, parent, Frame, on_press_command=None, on_release_command=None, ttk_btn = 0, symbol = ('▼','▲'),**button_options):
+        """
+        Provides a drop-down button which displays and hides the 'Frame' depending on 'counter'  
+
+        All valid tk.button and ttk.button attribute are acceptable
+        """
+
+        if ttk_btn:
+            ttk.Button.__init__(self, parent)
+            self.config(button_options)
+        else:
+            tk.Button.__init__(self, parent, button_options)
+
+        self.counter, self.Frame, self.symbol_down, self.symbol_up, self.mgr, self.button_text, self.onpresscmd, self.onreleasecmd = 0, Frame, symbol[0], symbol[1], Frame.winfo_manager(), self.cget("text"), on_press_command, on_release_command
+
+        self.mgr_options = getattr(Frame, f"{self.mgr}_info")()
+        self.mgr_options.pop('in')
+
+        self.Show = lambda : getattr(self.Frame, self.mgr) (self.mgr_options)
+        self.Hide = lambda : getattr(self.Frame, f"{self.mgr}_forget")()
+
+        self.config(text=f'{self.button_text} {self.symbol_down}', command=self.caller)
+        self.Hide()
+
+    def caller(self):
+        if self.counter: 
+            self.Hide()
+            if self.onreleasecmd != None:
+                self.onreleasecmd()
+            self.config(text=f'{self.button_text} {self.symbol_down}')
+
+            self.counter = 0
+        else: 
+            self.Show()
+            if self.onpresscmd != None:
+                self.onpresscmd()
+            self.config(text=f'{self.button_text} {self.symbol_up}')
+            self.counter = 1
+  
+  def demo():
+
+    root = tk.Tk()
+    root.title('Demo')
+    root.geometry('620x200')
+
+    holder = tk.Frame(root)
+    f = tk.Frame(holder, bg='red')
+    f.pack()
+    tk.Label(f,text='Hello', bg='green').pack()
+    f.pack()
+
+    a= DropdownButton(holder, Frame = f, text = 'Hello', bg='blue', fg='white')
+    a.pack()
+
+    root.mainloop()
+
+if __name__ == '__main__':
+
+    demo()
+
+    
