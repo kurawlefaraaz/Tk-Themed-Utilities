@@ -59,10 +59,8 @@ class EditableTreeview(ttk.Treeview):
         column = self.get_current_column()
         return self.get_cell_cords(row = row, column = column)
 
-    def update_row(self, values):
-        current_row = self.focus()
-
-        currentindex = self.index(self.focus())
+    def update_row(self, values, current_row, currentindex):
+        
 
         self.delete(current_row)
         
@@ -82,6 +80,9 @@ class EditableTreeview(ttk.Treeview):
     def edit(self, e):
         if self.check_region() == False: return
         elif self.check_non_editable() == False: return
+        
+        current_row = self.focus()
+        currentindex = self.index(self.focus())
         current_row_values = list(self.item(self.focus(),'values'))
         current_column = int(self.get_current_column().replace("#",''))-1
         current_cell_value = current_row_values[current_column]
@@ -98,7 +99,7 @@ class EditableTreeview(ttk.Treeview):
 
         if entry_var != current_cell_value:
             current_row_values[current_column] = entry_var.get()
-            self.update_row(values=current_row_values)
+            self.update_row(values=current_row_values, current_row=current_row, currentindex=currentindex)
             
 def demo():
 
