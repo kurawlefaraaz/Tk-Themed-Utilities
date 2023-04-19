@@ -60,7 +60,8 @@ class EditableTreeview(ttk.Treeview):
         return self.get_cell_cords(row = row, column = column)
 
     def update_row(self, values, current_row, currentindex):
-        
+        try:self.parent.state()
+        except: return
 
         self.delete(current_row)
         
@@ -97,7 +98,7 @@ class EditableTreeview(ttk.Treeview):
         
         PopupEntry(self, x=entry_x, y=entry_y, width=entry_w,entry_value=current_cell_value, textvar= entry_var, text_justify='left')
 
-        if entry_var != current_cell_value:
+        if entry_var.get() != current_cell_value:
             current_row_values[current_column] = entry_var.get()
             self.update_row(values=current_row_values, current_row=current_row, currentindex=currentindex)
             
