@@ -4,7 +4,7 @@ from poput_entry import PopupEntry
 import tkinter as tk
 
 class EditableTreeview(ttk.Treeview):
-    def __init__(self, parent, columns, show, bind_key,data:list, non_editable_columns = None):
+    def __init__(self, parent, columns, show, bind_key,data:list, non_editable_columns = ""):
         super().__init__(parent, columns=columns, show=show)
         self.parent = parent
         self.column_name = columns
