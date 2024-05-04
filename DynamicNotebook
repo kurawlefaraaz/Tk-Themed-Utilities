@@ -1,7 +1,7 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 
-class Workspace(ttk.Notebook):
+class DynamicNotebook(ttk.Notebook):
     def __init__(self, parent):
         super().__init__(parent)
 
@@ -61,7 +61,7 @@ class Workspace(ttk.Notebook):
 
 def demo():
     root = tk.Tk()
-    wksp =Workspace(root)
+    wksp =DynamicNotebook(root)
     wksp.pack(fill="both", expand=1)
     root.mainloop()
 
