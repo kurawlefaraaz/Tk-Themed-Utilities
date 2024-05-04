@@ -10,7 +10,6 @@ class DynamicNotebook(ttk.Notebook):
         self.intial_Frames()
 
         self.bind("<<NotebookTabChanged>>", self.watcher)
-        
 
     def intial_Frames(self):
         frame1 = tk.Frame(self, bg="white")
