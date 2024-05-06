@@ -1,0 +1,95 @@
+import tkinter as tk
+from tkinter.ttk import Separator, Style
+from tkinter.scrolledtext import ScrolledText
+
+class TextNumbers(tk.Listbox):
+    def __init__(self, master, textwidget, **options):
+
+        super().__init__(master, **options)
+
+        self.textwidget = textwidget
+        self.textwidget.bind("<Return>", self.update_num_list)
+        self.textwidget.bind("<BackSpace>", self.update_num_list)
+    
+        self.number_var = tk.Variable(self, value=["1"])
+
+        self.configure(listvariable=self.number_var, selectmode=tk.SINGLE)
+        self.set_width(1)
+        self.set_font()
+
+    def set_font(self):
+        font = self.textwidget.cget("font")
+        self.configure(font = font)
+
+    def set_width(self, num_len):
+        self.configure(width=num_len+1)
+
+    def update_num_list(self, event):
+        linenums = self.get_num_lines()
+        
+        if event.keycode == 13:
+            number_list = list(range(1, linenums + 1))
+        else:
+            number_list = list(range(1, linenums - 1)) if linenums > 2 else ["1", ]
+
+        self.set_width(len(str(linenums)))
+        self.number_var.set(number_list)
+        self.yview("end")
+        
+    def get_num_lines(self):
+        num_lines = int(self.textwidget.index("end").split(".")[0])
+        return (num_lines)
+
+class NumberedText(tk.Frame):
+    def __init__(self, master, **options):
+        super().__init__(master, **options)
+
+        style = Style(self)
+        self.configure(bg="white")
+        style.configure("TSeparator", relief="flat")
+        
+        self.uniscrollbar = tk.Scrollbar(self, relief="flat")
+        self.uniscrollbar.pack(side="right", fill="y", expand=1)
+        
+        self.scroll_text()
+
+        separator = Separator(self, orient='vertical')
+        separator.pack(side="right", fill="y",expand=1, padx=2)
+
+        self.number_widget()
+        
+        self.textarea.config(spacing1=0, spacing2=1, spacing3=1)
+        
+    def scroll_text(self):
+        self.textarea = tk.Text(self, relief="flat")
+
+        self.uniscrollbar["command"] = self.scroll_both
+        self.textarea["yscrollcommand"] = self.update_scroll_both
+
+        self.textarea.pack(side="right", fill="y", expand=1)
+    
+    def number_widget(self):
+        self.linenumber = TextNumbers(self, self.textarea, relief="flat", state="disabled", justify="right",)
+
+        self.uniscrollbar["command"] = self.scroll_both
+        self.linenumber["yscrollcommand"] = self.update_scroll_both
+
+        self.linenumber.pack(side="right", fill="y", expand=1)
+        
+    def mouse_wheel(self, event):
+        self.scrolltext.yview_scroll(int(-1*(event.delta/120)), "units")
+        self.number_widget.yview_scroll(int(-1*(event.delta/120)), "units")
+    
+    def scroll_both(self, action, position):
+        self.textarea.yview_moveto(position)
+        self.linenumber.yview_moveto(position)
+    
+    def update_scroll_both(self, first, last, type=None):
+        self.textarea.yview_moveto(first)
+        self.linenumber.yview_moveto(first)
+        self.uniscrollbar.set(first, last)
+
+r = tk.Tk()
+a=NumberedText(r)
+a.pack()
+r.mainloop()
