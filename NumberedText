@@ -4,7 +4,6 @@ from tkinter.scrolledtext import ScrolledText
 
 class TextNumbers(tk.Listbox):
     def __init__(self, master, textwidget, **options):
-
         super().__init__(master, **options)
 
         self.textwidget = textwidget
@@ -26,11 +25,10 @@ class TextNumbers(tk.Listbox):
 
     def update_num_list(self, event):
         linenums = self.get_num_lines()
+        current_column = self.get_current_colomn()
         
-        if event.keycode == 13:
-            number_list = list(range(1, linenums + 1))
-        else:
-            number_list = list(range(1, linenums - 1)) if linenums > 2 else ["1", ]
+        if current_column != 0 and event.keycode != 13: return
+        number_list = list(range(1, linenums)) if event.keycode == 13 else list(range(1, linenums-1))
 
         self.set_width(len(str(linenums)))
         self.number_var.set(number_list)
@@ -39,6 +37,10 @@ class TextNumbers(tk.Listbox):
     def get_num_lines(self):
         num_lines = int(self.textwidget.index("end").split(".")[0])
         return (num_lines)
+
+    def get_current_colomn(self):
+        curr_column = int(self.textwidget.index("insert").split(".")[1])
+        return (curr_column)
 
 class NumberedText(tk.Frame):
     def __init__(self, master, **options):
